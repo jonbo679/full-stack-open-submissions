@@ -88,7 +88,7 @@ const App = () => {
             setPersons(persons.map(person => person.id !== changedPerson.id ? person : changedPerson));
             showInfoMessage(`Updated number for ${newName}`);
           })
-          .catch(showErrorMessage(`Information of ${newName} has already been removed from the server`));
+          .catch(() => showErrorMessage(`Information of ${newName} has already been removed from the server`));
       }
     } else {
       const newPerson = { name: newName, number: newNumber }
@@ -96,8 +96,10 @@ const App = () => {
         .then(person => {
           setPersons(persons.concat(person));
           showInfoMessage(`Added ${newName}`);
+        }).catch(error => {
+          showErrorMessage(error.response.data.error)
 
-        })
+        });
     }
     setNewName('');
     setNewNumber('');
@@ -118,6 +120,7 @@ const App = () => {
   }
 
   const showErrorMessage = message => {
+    console.log("called with", message);
     setErrorMessage(message);
     setTimeout(() => {
       setErrorMessage(null);
